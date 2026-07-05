@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(cp *)",
+      "Bash(chmod +x *)",
+      "mcp__firecrawl__firecrawl_search",
+      "mcp__firecrawl__firecrawl_scrape",
+      "Bash(python tests/test_all.py)",
+      "Bash(python3 tests/test_all.py)",
+      "Bash(pip3 install *)",
+      "Bash(conda activate *)",
+      "Read(//home/jin/.claude/**)",
+      "Bash(gh repo *)",
+      "Bash(git add *)",
+      "Bash(git commit -m 'feat: 添加公共交通评分 - 地铁、公交、有轨电车全覆盖 *)"
+    ]
+  },
+  "enabledMcpjsonServers": [
+    "filesystem",
+    "sequential-thinking",
+    "firecrawl",
+    "github"
+  ]
+}

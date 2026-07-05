@@ -235,18 +235,20 @@ def score_listing(listing: Dict, user_preferences: Dict) -> Dict:
     """
     districts_data = load_districts_data()
     district_info = districts_data.get('districts', {}).get(listing.get('district'), {})
-    
+    transport_info = district_info.get('transport', {})
+
     # 获取用户自定义权重，或使用默认权重
     weights = user_preferences.get('weights', {
-        'price': 0.30,
-        'location': 0.25,
-        'facility': 0.20,
+        'price': 0.25,
         'safety': 0.15,
-        'distance': 0.10
+        'distance': 0.15,
+        'transport': 0.20,
+        'facility': 0.15,
+        'location': 0.10
     })
-    
+
     scores = {}
-    
+
     # 价格评分（越低越好）
     price = listing.get('price', 0)
     max_price = user_preferences.get('max_price', 1000)
@@ -260,11 +262,11 @@ def score_listing(listing: Dict, user_preferences: Dict) -> Dict:
         scores['price_score'] = 4
     else:
         scores['price_score'] = 2
-    
+
     # 安全评分（使用区域数据）
     safety_score = district_info.get('safety_score', 6.0)
     scores['safety_score'] = safety_score
-    
+
     # 距离评分（基于目标学校）
     distance_km = district_info.get('distance_polito_km', 5)
     if distance_km <= 1:
@@ -277,10 +279,37 @@ def score_listing(listing: Dict, user_preferences: Dict) -> Dict:
         scores['distance_score'] = 4
     else:
         scores['distance_score'] = 2
-    
+
+    # 公共交通评分（新增）
+    transport_score = transport_info.get('transport_score', 5.0)
+
+    # 额外考虑：是否有地铁
+    has_metro = len(transport_info.get('metro', {}).get('stations', [])) > 0
+    metro_walk_min = transport_info.get('metro', {}).get('walk_to_metro_min', 15)
+
+    if has_metro:
+        if metro_walk_min <= 5:
+            transport_score = min(10, transport_score + 1.5)
+        elif metro_walk_min <= 10:
+            transport_score = min(10, transport_score + 1.0)
+        elif metro_walk_min <= 15:
+            transport_score = min(10, transport_score + 0.5)
+
+    # 考虑夜间公交
+    night_lines = transport_info.get('bus', {}).get('night_lines', [])
+    if len(night_lines) > 0:
+        transport_score = min(10, transport_score + 0.5)
+
+    # 考虑火车站
+    has_train = transport_info.get('train', {}).get('station') is not None
+    if has_train:
+        transport_score = min(10, transport_score + 0.5)
+
+    scores['transport_score'] = transport_score
+
     # 位置评分（综合安全和距离）
     scores['location_score'] = (safety_score * 0.5 + scores['distance_score'] * 0.5)
-    
+
     # 设施评分
     facility_score = 5
     if listing.get('furnished'):
@@ -292,7 +321,7 @@ def score_listing(listing: Dict, user_preferences: Dict) -> Dict:
     if listing.get('heating') == 'independent':
         facility_score += 1.5
     scores['facility_score'] = min(10, facility_score)
-    
+
     # 房型匹配评分
     preferred_type = user_preferences.get('room_type')
     if preferred_type:
@@ -304,14 +333,15 @@ def score_listing(listing: Dict, user_preferences: Dict) -> Dict:
             scores['type_match_score'] = 4
     else:
         scores['type_match_score'] = 7  # 没有偏好
-    
+
     # 综合评分
     overall_score = (
-        scores['price_score'] * weights.get('price', 0.30) +
+        scores['price_score'] * weights.get('price', 0.25) +
         scores['safety_score'] * weights.get('safety', 0.15) +
-        scores['distance_score'] * weights.get('distance', 0.10) +
-        scores['location_score'] * weights.get('location', 0.25) +
-        scores['facility_score'] * weights.get('facility', 0.20)
+        scores['distance_score'] * weights.get('distance', 0.15) +
+        scores['transport_score'] * weights.get('transport', 0.20) +
+        scores['location_score'] * weights.get('location', 0.10) +
+        scores['facility_score'] * weights.get('facility', 0.15)
     )
     
     # 房型匹配加成
@@ -332,8 +362,9 @@ def generate_recommendation_reason(listing: Dict, user_preferences: Dict) -> str
     """
     districts_data = load_districts_data()
     district_info = districts_data.get('districts', {}).get(listing.get('district'), {})
+    transport_info = district_info.get('transport', {})
     reasons = []
-    
+
     # 价格优势
     max_price = user_preferences.get('max_price', 0)
     price = listing.get('price', 0)
@@ -341,20 +372,47 @@ def generate_recommendation_reason(listing: Dict, user_preferences: Dict) -> str
         reasons.append(f"价格低于预算{((max_price - price) / max_price * 100):.0f}%")
     elif max_price and price <= max_price:
         reasons.append(f"价格在预算内")
-    
+
     # 安全性
     safety_score = district_info.get('safety_score', 0)
     if safety_score >= 8:
         reasons.append(f"安全区域（评分{safety_score}/10）")
     elif safety_score >= 7:
         reasons.append(f"较安全（评分{safety_score}/10）")
-    
+
     # 距离学校
     distance_km = district_info.get('distance_polito_km', 0)
     bike_time = district_info.get('bike_time_polito_min', 0)
     if distance_km <= 1.5:
         reasons.append(f"距离学校{distance_km}km，自行车{bike_time}分钟")
-    
+
+    # 公共交通（新增）
+    metro_stations = transport_info.get('metro', {}).get('stations', [])
+    metro_walk = transport_info.get('metro', {}).get('walk_to_metro_min', 0)
+    bus_lines = transport_info.get('bus', {}).get('lines', [])
+    tram_lines = transport_info.get('tram', {}).get('lines', [])
+
+    if metro_stations and metro_walk <= 8:
+        reasons.append(f"靠近地铁{metro_stations[0]}站（步行{metro_walk}分钟）")
+    elif metro_stations and metro_walk <= 12:
+        reasons.append(f"地铁{metro_stations[0]}站步行{metro_walk}分钟")
+
+    if len(bus_lines) >= 4:
+        reasons.append(f"公交便利（{len(bus_lines)}条线路）")
+
+    if tram_lines:
+        reasons.append(f"有轨电车{','.join(tram_lines)}号线")
+
+    # 夜间公交
+    night_lines = transport_info.get('bus', {}).get('night_lines', [])
+    if night_lines:
+        reasons.append("有夜间公交")
+
+    # 火车站
+    train_station = transport_info.get('train', {}).get('station')
+    if train_station:
+        reasons.append(f"靠近{train_station}火车站")
+
     # 设施
     if listing.get('furnished'):
         reasons.append("带家具")
@@ -362,10 +420,10 @@ def generate_recommendation_reason(listing: Dict, user_preferences: Dict) -> str
         reasons.append("独立供暖")
     elif listing.get('heating') == 'centralized':
         reasons.append("集中供暖")
-    
+
     # 区域特点
     characteristics = district_info.get('characteristics', '')
     if characteristics:
         reasons.append(characteristics)
-    
+
     return '；'.join(reasons) if reasons else "综合条件符合需求"
