@@ -1,0 +1,273 @@
+{
+  "districts": {
+    "Cit Turin": {
+      "name_cn": "奇图林",
+      "safety_score": 8.5,
+      "safety_level": "高",
+      "price_level": "中高",
+      "avg_rent_sqm": 13.5,
+      "distance_polito_km": 0.5,
+      "bike_time_polito_min": 3,
+      "metro_stations": ["Principi d'Acaja", "Bernini", "Porta Susa"],
+      "characteristics": "安全、安静、靠近学校、生活便利",
+      "recommended": true,
+      "notes": "都灵理工学生首选区域，安全且步行可达学校"
+    },
+    "Crocetta": {
+      "name_cn": "克罗切塔",
+      "safety_score": 9.0,
+      "safety_level": "很高",
+      "price_level": "高",
+      "avg_rent_sqm": 15.0,
+      "distance_polito_km": 2.0,
+      "bike_time_polito_min": 8,
+      "metro_stations": ["Rivoli", "Massaua"],
+      "characteristics": "最安全、高档住宅区、环境优美",
+      "recommended": true,
+      "notes": "都灵最安全区域，租金较高但环境一流"
+    },
+    "Centro": {
+      "name_cn": "市中心",
+      "safety_score": 7.5,
+      "safety_level": "中高",
+      "price_level": "高",
+      "avg_rent_sqm": 16.0,
+      "distance_polito_km": 1.5,
+      "bike_time_polito_min": 7,
+      "metro_stations": ["Porta Nuova", "Porta Susa", "Re Umberto", "Vinzaglio"],
+      "characteristics": "交通便利、生活方便、人流密集",
+      "recommended": true,
+      "notes": "市中心区域，生活便利但较嘈杂"
+    },
+    "Cenisia": {
+      "name_cn": "切尼西亚",
+      "safety_score": 7.0,
+      "safety_level": "中高",
+      "price_level": "中",
+      "avg_rent_sqm": 11.5,
+      "distance_polito_km": 1.0,
+      "bike_time_polito_min": 5,
+      "metro_stations": ["Racconigi", "Rivoli"],
+      "characteristics": "性价比高、靠近学校、学生多",
+      "recommended": true,
+      "notes": "性价比最高的学生区域，强烈推荐"
+    },
+    "San Donato": {
+      "name_cn": "圣多纳托",
+      "safety_score": 7.0,
+      "safety_level": "中高",
+      "price_level": "中",
+      "avg_rent_sqm": 10.5,
+      "distance_polito_km": 1.5,
+      "bike_time_polito_min": 6,
+      "metro_stations": ["Bernini", "Principi d'Acaja"],
+      "characteristics": "价格适中、安全、生活便利",
+      "recommended": true,
+      "notes": "适合预算有限的学生，安全且交通便利"
+    },
+    "Borgo Po": {
+      "name_cn": "博尔戈波",
+      "safety_score": 8.0,
+      "safety_level": "高",
+      "price_level": "高",
+      "avg_rent_sqm": 14.5,
+      "distance_polito_km": 2.5,
+      "bike_time_polito_min": 10,
+      "metro_stations": [],
+      "characteristics": "高档区、环境优美、安静",
+      "recommended": true,
+      "notes": "靠近波河，环境极佳，但地铁不便"
+    },
+    "Campidoglio": {
+      "name_cn": "坎皮多利奥",
+      "safety_score": 6.5,
+      "safety_level": "中",
+      "price_level": "中低",
+      "avg_rent_sqm": 10.0,
+      "distance_polito_km": 1.8,
+      "bike_time_polito_min": 7,
+      "metro_stations": [],
+      "characteristics": "价格较低、安静",
+      "recommended": false,
+      "notes": "性价比可以，但交通不太便利"
+    },
+    "Borgo San Paolo": {
+      "name_cn": "圣保罗区",
+      "safety_score": 6.5,
+      "safety_level": "中",
+      "price_level": "中",
+      "avg_rent_sqm": 11.0,
+      "distance_polito_km": 2.0,
+      "bike_time_polito_min": 8,
+      "metro_stations": ["Racconigi"],
+      "characteristics": "学生区、生活便利",
+      "recommended": false,
+      "notes": "靠近学校，但安全性一般"
+    },
+    "San Salvario": {
+      "name_cn": "圣萨尔瓦里奥",
+      "safety_score": 5.5,
+      "safety_level": "中低",
+      "price_level": "中",
+      "avg_rent_sqm": 12.0,
+      "distance_polito_km": 2.5,
+      "bike_time_polito_min": 10,
+      "metro_stations": ["Porta Nuova", "Lingotto"],
+      "characteristics": "多元文化、生活便利、夜生活丰富",
+      "recommended": false,
+      "notes": "Via Nizza附近较危险，其他区域相对安全"
+    },
+    "Aurora": {
+      "name_cn": "奥罗拉",
+      "safety_score": 4.0,
+      "safety_level": "低",
+      "price_level": "低",
+      "avg_rent_sqm": 9.0,
+      "distance_polito_km": 3.0,
+      "bike_time_polito_min": 12,
+      "metro_stations": ["Re Umberto"],
+      "characteristics": "移民区、犯罪率较高、价格低",
+      "recommended": false,
+      "notes": "⚠️ 危险区域，不建议留学生居住"
+    },
+    "Barriera di Milano": {
+      "name_cn": "米兰屏障区",
+      "safety_score": 3.5,
+      "safety_level": "低",
+      "price_level": "低",
+      "avg_rent_sqm": 8.5,
+      "distance_polito_km": 4.0,
+      "bike_time_polito_min": 15,
+      "metro_stations": ["XVIII Dicembre"],
+      "characteristics": "犯罪率最高、移民聚集、价格最低",
+      "recommended": false,
+      "notes": "⚠️ 最危险区域，强烈不建议居住"
+    },
+    "Valdocco": {
+      "name_cn": "瓦尔多科",
+      "safety_score": 5.0,
+      "safety_level": "中低",
+      "price_level": "低",
+      "avg_rent_sqm": 9.5,
+      "distance_polito_km": 2.5,
+      "bike_time_polito_min": 10,
+      "metro_stations": [],
+      "characteristics": "宗教区、相对安全但位置偏",
+      "recommended": false,
+      "notes": "慈幼会区域，白天安全，晚上需注意"
+    },
+    "Vanchiglia": {
+      "name_cn": "万基利亚",
+      "safety_score": 6.0,
+      "safety_level": "中",
+      "price_level": "中",
+      "avg_rent_sqm": 11.0,
+      "distance_polito_km": 3.0,
+      "bike_time_polito_min": 12,
+      "metro_stations": [],
+      "characteristics": "学生区、靠近波河、环境不错",
+      "recommended": false,
+      "notes": "适合都灵大学学生，距离理工大学较远"
+    },
+    "Madonna di Campagna": {
+      "name_cn": "田野圣母区",
+      "safety_score": 5.5,
+      "safety_level": "中",
+      "price_level": "低",
+      "avg_rent_sqm": 9.5,
+      "distance_polito_km": 3.5,
+      "bike_time_polito_min": 14,
+      "metro_stations": ["XVIII Dicembre"],
+      "characteristics": "价格低、交通不便",
+      "recommended": false,
+      "notes": "价格低但距离学校较远"
+    },
+    "Mirafiori Nord": {
+      "name_cn": "米拉菲奥里北",
+      "safety_score": 5.0,
+      "safety_level": "中低",
+      "price_level": "低",
+      "avg_rent_sqm": 9.0,
+      "distance_polito_km": 5.0,
+      "bike_time_polito_min": 20,
+      "metro_stations": [],
+      "characteristics": "工业区、价格低、距离远",
+      "recommended": false,
+      "notes": "距离理工大学太远，不建议"
+    },
+    "Mirafiori Sud": {
+      "name_cn": "米拉菲奥里南",
+      "safety_score": 4.5,
+      "safety_level": "低",
+      "price_level": "低",
+      "avg_rent_sqm": 8.5,
+      "distance_polito_km": 6.0,
+      "bike_time_polito_min": 25,
+      "metro_stations": [],
+      "characteristics": "偏远、价格最低",
+      "recommended": false,
+      "notes": "太远，不适合通勤上学"
+    }
+  },
+  "universities": {
+    "Politecnico di Torino": {
+      "campuses": {
+        "Duca degli Abruzzi": {
+          "address": "Corso Duca degli Abruzzi, 24",
+          "coordinates": {"lat": 45.0628, "lng": 7.6625},
+          "nearest_metro": "Principi d'Acaja",
+          "nearby_districts": ["Cit Turin", "Cenisia", "San Donato"]
+        },
+        "Lingotto": {
+          "address": "Via Nizza, 230",
+          "coordinates": {"lat": 45.0305, "lng": 7.6665},
+          "nearest_metro": "Lingotto",
+          "nearby_districts": ["Lingotto", "Nizza Millefonti"]
+        }
+      }
+    },
+    "Università di Torino": {
+      "campuses": {
+        "Centro": {
+          "address": "Via Giuseppe Verdi, 8",
+          "coordinates": {"lat": 45.0703, "lng": 7.6869},
+          "nearest_metro": "Porta Nuova",
+          "nearby_districts": ["Centro", "San Salvario"]
+        },
+        "Medicina": {
+          "address": "Via Cherasco, 15",
+          "coordinates": {"lat": 45.0578, "lng": 7.6797},
+          "nearest_metro": "Porta Nuova",
+          "nearby_districts": ["San Salvario"]
+        }
+      }
+    }
+  },
+  "safety_summary": {
+    "very_safe": ["Crocetta", "Cit Turin", "Borgo Po"],
+    "safe": ["Centro", "Cenisia", "San Donato"],
+    "moderate": ["Borgo San Paolo", "Campidoglio", "Vanchiglia", "Madonna di Campagna"],
+    "unsafe": ["San Salvario (部分)", "Valdocco", "Mirafiori Nord"],
+    "dangerous": ["Aurora", "Barriera di Milano", "Porta Palazzo"]
+  },
+  "price_summary": {
+    "expensive": ["Centro", "Crocetta", "Borgo Po", "Cit Turin"],
+    "medium": ["Cenisia", "San Donato", "Borgo San Paolo", "San Salvario"],
+    "affordable": ["Campidoglio", "Madonna di Campagna", "Valdocco"],
+    "cheap": ["Aurora", "Barriera di Milano", "Mirafiori"]
+  },
+  "recommendations": {
+    "politecnico_best": {
+      "districts": ["Cit Turin", "Cenisia", "San Donato"],
+      "reason": "安全、距离近、性价比高"
+    },
+    "politecnico_good": {
+      "districts": ["Crocetta", "Centro", "Borgo Po"],
+      "reason": "安全舒适，但租金较高"
+    },
+    "avoid": {
+      "districts": ["Aurora", "Barriera di Milano", "Porta Palazzo"],
+      "reason": "犯罪率高，不安全"
+    }
+  }
+}
