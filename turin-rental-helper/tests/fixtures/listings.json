@@ -1,0 +1,34 @@
+[
+  {
+    "id": "fixture:cenisia",
+    "source": "fixture",
+    "title": "Studio Cenisia",
+    "url": "https://example.test/cenisia",
+    "base_rent": 560,
+    "mandatory_expenses": 70,
+    "estimated_utilities": 45,
+    "area_sqm": 28,
+    "property_type": "studio",
+    "district": "Cenisia",
+    "commute_minutes": 18,
+    "furnished": true,
+    "observed_at": "2026-09-29",
+    "extraction_confidence": 0.95
+  },
+  {
+    "id": "fixture:far",
+    "source": "fixture",
+    "title": "Cheaper but far room",
+    "url": "https://example.test/far",
+    "base_rent": 480,
+    "mandatory_expenses": 60,
+    "estimated_utilities": 70,
+    "area_sqm": 18,
+    "property_type": "room",
+    "district": "Example",
+    "commute_minutes": 42,
+    "furnished": true,
+    "observed_at": "2026-09-29",
+    "extraction_confidence": 0.9
+  }
+]

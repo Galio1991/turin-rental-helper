@@ -3,6 +3,8 @@
 工具函数
 """
 
+from typing import Dict
+
 
 def format_price(price: float) -> str:
     """格式化价格"""

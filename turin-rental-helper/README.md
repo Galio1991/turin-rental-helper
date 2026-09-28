@@ -1,316 +1,135 @@
-# 都灵租房助手 (Turin Rental Helper)
+# Turin Rental Helper Core
 
-一个为前往意大利都灵留学的中国学生提供的个性化租房服务Skill。
+本目录包含 Turin Rental Helper 的 Skill、Python 决策引擎、命令行入口和测试。
 
-## 功能特性
+## 运行环境
 
-### 核心功能
+- Python 3.10+
+- 核心无第三方运行时依赖
+- 支持以 Skill 方式调用，也支持直接使用 JSON CLI 或 Python API
 
-1. **智能需求收集** - 交互式收集租房偏好和需求
-2. **多源数据采集** - 从多个意大利租房网站爬取房源信息
-3. **多维度分析** - 对房源进行全面的价格、位置、设施、安全分析
-4. **个性化推荐** - 根据用户偏好智能排序和推荐
-5. **综合输出** - 生成对比表格、详细报告、看房清单等
-
-### 特别关注点
-
-- ✅ **暖气/空调配置识别** - 区分集中供暖vs独立供暖
-- ✅ **费用明细解析** - 水费、物业费、供暖费包含情况
-- ✅ **学校proximity** - 都灵理工大学、都灵大学等
-- ✅ **安全评估** - 区域治安和夜间安全
-- ✅ **性价比分析** - 年度总成本估算
-
-## 使用方法
-
-### 触发条件
-
-当用户提到以下关键词时自动触发：
-- 都灵租房、都灵找房、Turin rental/apartment
-- 意大利租房、意大利找房
-- 留学住房、学生公寓
-- Immobiliare、Idealista等租房网站
-
-### 基本使用
-
-1. **找房需求**
-   ```
-   我即将去都灵留学，想找一个靠近都灵理工大学的单间公寓，预算500欧以内
-   ```
-
-2. **房源对比**
-   ```
-   帮我对比一下这三个房源，哪个性价比最高？
-   ```
-
-3. **详细分析**
-   ```
-   这个房源看起来不错，帮我详细分析一下费用和位置
-   ```
-
-4. **看房准备**
-   ```
-   我明天要看房，帮我生成一个看房清单
-   ```
-
-## 目录结构
-
-```
-turin-rental-helper/
-├── SKILL.md                    # 主skill文档
-├── README.md                   # 使用说明
-├── scripts/
-│   ├── scraper.py              # 网站爬虫脚本
-│   ├── analyzer.py             # 数据分析脚本
-│   ├── comparator.py           # 房源对比脚本
-│   ├── report_generator.py     # 报告生成脚本
-│   ├── requirements_collector.py # 需求收集脚本
-│   └── utils.py                # 工具函数
-├── references/
-│   ├── turin-districts.md      # 都灵各区指南
-│   ├── rental-contract.md      # 意大利租房合同指南
-│   ├── cost-analysis.md        # 费用分析指南
-│   └── university-locations.md # 大学位置信息
-├── assets/
-│   ├── templates/
-│   │   ├── comparison_table.md # 对比表格模板
-│   │   ├── analysis_report.md  # 分析报告模板
-│   │   └── checklist.md        # 看房清单模板
-│   └── data/
-│       ├── turin-areas.json    # 都灵区域数据
-│       └── transport.json      # 公共交通数据
-└── evals/
-    └── evals.json              # 测试用例
-```
-
-## 主要脚本
-
-### 1. 需求收集脚本 (requirements_collector.py)
-
-交互式收集用户租房需求，生成需求配置文件。
+## 命令行使用
 
 ```bash
-python scripts/requirements_collector.py --output requirements.json
+python3 scripts/rank_listings.py \
+  --listings tests/fixtures/listings.json \
+  --preferences tests/fixtures/preferences.json \
+  --output /tmp/recommendations.json \
+  --limit 10
 ```
 
-### 2. 房源爬虫脚本 (scraper.py)
+参数：
 
-从意大利租房网站爬取房源信息。
+| 参数 | 必需 | 说明 |
+|---|---|---|
+| `--listings` | 是 | UTF-8 JSON 数组，遵循房源数据规范 |
+| `--preferences` | 是 | UTF-8 JSON 对象，包含约束、偏好和权重 |
+| `--output` | 否 | 输出文件；省略时写入标准输出 |
+| `--limit` | 否 | 返回数量，默认 10 |
+
+无效输入记录不会导致整批任务中断，会出现在结果的 `invalid` 中。明确违反硬约束的房源会出现在 `rejected` 中；规范化 URL 相同的房源会出现在 `duplicates` 中。
+
+## Python API
+
+将 `scripts` 加入 Python 模块搜索路径后，可以直接调用核心管线：
+
+```python
+from rental_helper import recommend
+
+result = recommend(
+    raw_listings=[
+        {
+            "id": "source:123",
+            "source": "source",
+            "title": "Example studio",
+            "url": "https://example.test/123",
+            "base_rent": 560,
+            "mandatory_expenses": 70,
+            "estimated_utilities": 45,
+            "property_type": "studio",
+            "commute_minutes": 18,
+        }
+    ],
+    raw_preferences={
+        "max_total_monthly": 750,
+        "max_commute_minutes": 35,
+        "property_types": ["studio"],
+    },
+    limit=5,
+)
+
+payload = result.to_dict()
+```
+
+公开入口：
+
+- `Listing.from_dict(...)`：校验并建立规范房源；
+- `Preferences.from_dict(...)`：校验约束并归一化权重；
+- `recommend(...)`：执行校验、去重、筛选、评分和多样化；
+- `RecommendationResult.to_dict()`：生成可序列化结果。
+
+## 已获取文本的解析
+
+`IdealistaMarkdownAdapter` 只解析已经取得的 Markdown 文本，不发起网络请求：
+
+```python
+from rental_helper.adapters import IdealistaMarkdownAdapter
+
+listings = IdealistaMarkdownAdapter().parse(markdown_text)
+```
+
+页面未出现的设施字段保持 `None`。为没有明确写出的内容猜测 `True` 或 `False` 会破坏后续约束和置信度逻辑。
+
+## 数据与评分文档
+
+- [房源数据规范](references/listing-schema.md)：字段类型、费用语义、证据要求和偏好格式。
+- [推荐方法](references/ranking-method.md)：约束、连续效用、置信度、Pareto 和分数解释。
+- [架构说明](docs/architecture.md)：模块边界、扩展点与工程不变量。
+- [v2 迁移指南](docs/migration-v2.md)：旧字段和旧接口迁移方式。
+
+## 开发与验证
+
+运行完整测试：
 
 ```bash
-python scripts/scraper.py --config requirements.json --output listings.json
+python3 -m unittest discover -s tests -v
 ```
 
-### 3. 数据分析脚本 (analyzer.py)
-
-对房源数据进行多维度分析。
+运行端到端样例：
 
 ```bash
-python scripts/analyzer.py --input listings.json --output analysis.json
+python3 scripts/rank_listings.py \
+  --listings tests/fixtures/listings.json \
+  --preferences tests/fixtures/preferences.json \
+  --limit 2
 ```
 
-### 4. 对比推荐脚本 (comparator.py)
+修改算法时必须验证以下性质：
 
-对多个房源进行横向对比并提供推荐。
+1. 成本和通勤效用具有正确的单调性；
+2. 房源原始分数不依赖候选集合；
+3. 缺失值不会被转换成虚构的普通分数；
+4. 未带来源、日期和粒度的安全指标不会参与评分；
+5. 展示层多样化可以改变顺序，但不能修改原始分数。
+
+## 安装为 Skill
+
+默认安装到 `~/.claude/skills/turin-rental-helper`：
 
 ```bash
-python scripts/comparator.py --input analysis.json --output comparison.json
+./install.sh
 ```
 
-### 5. 报告生成脚本 (report_generator.py)
-
-生成各种格式的租房报告。
+也可以指定其他目标目录：
 
 ```bash
-python scripts/report_generator.py --input comparison.json --output-dir reports --type comparison
+./install.sh /path/to/skills/turin-rental-helper
 ```
 
-## 输出格式
+安装器不会覆盖已有路径。如果目标已存在，应先备份或检查差异，再明确处理旧版本。
 
-### 1. 对比表格
+## 兼容性
 
-Markdown格式的房源对比表，包含：
-- 价格对比
-- 面积对比
-- 位置对比
-- 设施对比
-- 综合评分
+`scripts/comparator.py` 和 `scripts/scraper.py` 保留旧项目常用函数名，但内部已委托给 v2 模型与评分逻辑。新代码不应继续依赖旧版 `price_score`、`location_score` 或 `closeness` 语义。
 
-### 2. 详细分析报告
-
-包含多维度分析的完整报告：
-- 价格分析（性价比、隐藏费用）
-- 位置分析（学校距离、交通便利性）
-- 设施分析（暖气类型、空调配置）
-- 合同分析（租期、费用包含）
-
-### 3. 看房清单
-
-详细的看房检查清单：
-- 需要检查的项目
-- 需要询问的问题
-- 注意事项
-
-### 4. 合同指南
-
-意大利租房合同签约指南：
-- 合同类型
-- 必备条款
-- 注意事项
-- 实用短语
-
-## 参考文档
-
-### 都灵各区指南
-
-详细介绍都灵主要区域的特点、租金水平、安全状况等。
-
-### 租房合同指南
-
-意大利租房合同的基本知识、主要条款和注意事项。
-
-### 费用分析指南
-
-都灵租房的费用构成、计算方法和优化建议。
-
-### 大学位置信息
-
-都灵主要大学的详细位置信息和周边租房建议。
-
-## 数据文件
-
-### 都灵区域数据 (turin-areas.json)
-
-包含都灵各区域的详细信息：
-- 区域坐标
-- 平均租金
-- 安全评分
-- 交通评分
-- 生活设施
-- 大学距离
-
-### 公共交通数据 (transport.json)
-
-包含都灵公共交通信息：
-- 地铁线路
-- 公交线路
-- 有轨电车
-- 票价信息
-- 通勤时间
-
-## 使用示例
-
-### 示例1: 初次找房
-
-```
-用户: 我即将去都灵留学，想找一个靠近都灵理工大学的单间公寓，预算500欧以内
-
-助手: 我来帮你找都灵的房子！首先让我了解一些你的具体需求...
-
-[执行需求收集流程]
-[执行房源搜索]
-[执行数据分析]
-[生成对比报告]
-```
-
-### 示例2: 房源对比
-
-```
-用户: 帮我对比一下这三个房源，哪个性价比最高？
-- 房源1: €500/月，30m²，市中心，集中供暖
-- 房源2: €450/月，25m²，大学城，独立供暖
-- 房源3: €480/月，28m²，地铁旁，独立供暖
-
-助手: 我来帮你对比这三个房源...
-
-[执行数据分析]
-[执行对比分析]
-[生成对比表格]
-```
-
-### 示例3: 深入分析
-
-```
-用户: 这个房源看起来不错，帮我详细分析一下费用和位置
-
-助手: 我来详细分析这个房源...
-
-[执行详细分析]
-[生成分析报告]
-```
-
-## 技术依赖
-
-### 必需工具
-- **Firecrawl**: 用于网页爬取和内容提取
-- **WebSearch**: 用于搜索补充信息
-- **文件系统工具**: 用于数据存储和报告生成
-
-### Python依赖
-- Python 3.7+
-- json
-- re
-- math
-- typing
-- dataclasses
-- datetime
-- pathlib
-
-## 注意事项
-
-1. **数据准确性**: 房源信息可能过时或不准确，建议用户核实
-2. **网站反爬虫**: 使用合理的爬取间隔，避免被封禁
-3. **隐私保护**: 不存储用户个人信息
-4. **法律合规**: 遵守相关网站的使用条款
-
-## 扩展功能
-
-### 短期扩展
-- 支持更多城市（米兰、罗马等）
-- 添加更多数据源
-- 优化推荐算法
-
-### 长期扩展
-- 集成地图可视化
-- 添加用户评价系统
-- 建立房源数据库
-- 提供签约辅助
-
-## 贡献指南
-
-欢迎贡献代码、报告问题或提出建议！
-
-### 如何贡献
-
-1. Fork 项目
-2. 创建功能分支
-3. 提交更改
-4. 推送到分支
-5. 创建 Pull Request
-
-### 报告问题
-
-如果发现问题，请创建一个issue，包含：
-- 问题描述
-- 复现步骤
-- 预期行为
-- 实际行为
-- 环境信息
-
-## 许可证
-
-MIT License
-
-## 联系方式
-
-如有问题或建议，请通过以下方式联系：
-- 项目Issues
-- 邮件联系
-
-## 致谢
-
-感谢所有为这个项目做出贡献的人！
-
----
-
-**最后更新**: 2026-07-05
-**版本**: 1.0.0
+旧版 `assets/data/turin-districts.json` 仅保留用于迁移和核验，不进入默认推荐流程。

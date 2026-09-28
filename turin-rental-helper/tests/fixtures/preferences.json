@@ -1,0 +1,9 @@
+{
+  "max_total_monthly": 750,
+  "max_commute_minutes": 45,
+  "target_commute_minutes": 20,
+  "min_area_sqm": 15,
+  "property_types": ["studio", "room"],
+  "furnished": true,
+  "unknown_hard_policy": "warn"
+}

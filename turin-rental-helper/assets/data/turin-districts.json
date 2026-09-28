@@ -1,4 +1,9 @@
 {
+  "_metadata": {
+    "status": "legacy_unverified",
+    "used_by_default_ranker": false,
+    "note": "Historical prototype data without source dates. Verify before use; never use demographic composition as a risk proxy."
+  },
   "districts": {
     "Cit Turin": {
       "name_cn": "奇图林",
@@ -430,9 +435,9 @@
         },
         "transport_score": 6.5
       },
-      "characteristics": "移民区、犯罪率较高、价格低",
+      "characteristics": "价格较低；安全与交通描述待权威数据核验",
       "recommended": false,
-      "notes": "⚠️ 危险区域，不建议留学生居住"
+      "notes": "旧版资料，缺少来源和更新时间；不得据此自动排除房源"
     },
     "Barriera di Milano": {
       "name_cn": "米兰屏障区",
@@ -461,9 +466,9 @@
         },
         "transport_score": 7.0
       },
-      "characteristics": "犯罪率最高、移民聚集、价格最低",
+      "characteristics": "价格较低；街区情况需使用近期、细粒度资料核验",
       "recommended": false,
-      "notes": "⚠️ 最危险区域，强烈不建议居住"
+      "notes": "旧版资料，缺少来源和更新时间；不得据此自动排除房源"
     },
     "Valdocco": {
       "name_cn": "瓦尔多科",
